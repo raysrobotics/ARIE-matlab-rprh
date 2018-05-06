@@ -3,7 +3,7 @@ function T = rot(f, theta)
 %
 % Parameters:
 %  - f: rotation vector
-%  - theta: rotation angle
+%  - theta: rotation angle (radian)
 %
 % Author:
 %  Ray Lee(lirui2013@ia.ac.cn)
