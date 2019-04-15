@@ -1,4 +1,4 @@
-% ×¢:´Ë°æ±¾Êä³öÎªµ×ÃæÖÐÐÄµã£¬²»ÊÇ×îµÍµã£¬ÆäËûÎÞÇø±ð
+% ×¢:ï¿½Ë°æ±¾ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äµã£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Íµã£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 % This .m script is used for visualizing the ARIE 
 % in the assemby task of round-peg and round-hole
 % 
@@ -12,7 +12,7 @@
 %  - [x,y]: used to set simulation ranges
 %
 % Author:
-%  Ray Lee(lirui2013@ia.ac.cn)
+%  Rui Li (raysworld@outlook.com)
 %
 % Date:
 %  2014-06-01 File created

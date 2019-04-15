@@ -1,60 +1,82 @@
 # Attractive Region in Environment for round-peg round-hole insertion
 
-文件说明
-2014-09-23 Created by ray lee(lirui2013@ia.ac.cn)
+These MATLAB scripts are used to visualize 3D attractive region in environment for round-peg-round-hole assembly tasks.
+
+Author: Rui Li (raysworld@outlook.com)
 
 
-[Function]
+
+### [Functions]
+
+| Filename                 | Purpose                                                      | Usage                                                        |
+| ------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| rot.m                    | Perform general rotation transformation                      | T = rot(f, theta)                                            |
+| trans.m                  | Perform translation transformation                           | T = trans(vector)                                            |
+| ARIE_log.m               | Write the current parameters, options and flag in a .txt log file | ARIE_log(param, options, flag)                               |
+| ARIE_output.m            | Write the output point data in a .txt file                   | ARIE_output(x, y, z)                                         |
+| localMaximum.m           | This function returns the indexes\subscripts of local maximum in the data x. x can be a vector or a matrix of any dimension. | varargout = localMaximum(x,minDist, exculdeEqualPoints)      |
+| ARIE_findLowestPoint.m   | Find the lowest point in the given region. The radius of the peg and the hole are treated as the same in this version. | [flag, d_lowest, O_pe_H] = ARIE_findLowestPoint(param, options, display) |
+| ARIE_findLowestPoint_R.m | In this implementation, the radius of the peg and the hole are different. |                                                              |
+| ARIE_findLowestPoint_N.m | In this implementation, the intersection points are calculated with numerical methods instead of solving quadratic equations |                                                              |
+
+
+
+[Scripts]
 ---------------------------------------------------------------------
-ARIE_findLowestPoint.m
-计算圆轴圆孔装配过程中最低点的函数
+**script_ecc_peg_hole.m**
+
+It is a script-version of the file ARIE_findLowestPoint and you can read and test this file to know how ARIE_findLowestPoint works.
+
+You can use this script to test the function *ARIE_findLowestPoint*. Given the pose of the peg, you will get the position of the lowest point on the peg.
 
 ---------------------------------------------------------------------
-ARIE_log.m
-输出当前param结构体的内容至文本文件中。调试用
+**script_ecc_peg_hole_edge.m**
+
+It is a script-version of the file ARIE_findLowestPoint and you can read and test this file to know how ARIE_findLowestPoint works.
+
+You can use this script to test the function *ARIE_findLowestPoint*. Given the pose of the peg, you will get the position of the lowest point on the peg. The difference between this file and the above file is that in this implementation, the contact points on the side surface are also detected.
+
+
 
 ---------------------------------------------------------------------
-ARIE_output.m
-输出吸引域点数据至文本文件中。调试用
+**script_main.m**
+
+Basic version of the script. Given the tilt angle of the peg, the x and y range of the  position of the reference point attached to the peg, the radius of the peg and the hole, a 3D constrained region (and possibly an attractive region in environment) will be extracted. 
+
+Note for this version, you can only specify the tilt angle about x axis OR y axis. Specifying both axes at the same time will lead to inaccurate results.
 
 ---------------------------------------------------------------------
-rot.m
-通用旋转变换
+**script_main_AR1.m**
+
+This file is identical to the basic version *script_main*. The difference is that all Nan value are reassigned as 0 for postprocessing and visualization.
 
 ---------------------------------------------------------------------
-trans.m
-平移变换
+**script_main_o.m**
 
-[Script]
----------------------------------------------------------------------
-script_ecc_peg_hole.m
-ARIE_findLowestPoint的脚本版本，不带侧面接触点检测（备份用）
-给定一组轴的位姿数据，计算该位姿下轴的最低点坐标
+This file is identical to the basic version *script_main*. The difference is that the output is the position of the center point of the bottom surface instead of the lowest point.
 
----------------------------------------------------------------------
-script_ecc_peg_hole_edge.m
-ARIE_findLowestPoint的脚本版本，带侧面接触点检测
-给定一组轴的位姿数据，计算该位姿下轴的最低点坐标
+------
+
+**script_main_plot.m**
+
+This file is identical to the basic version *script_main*. The difference is that this version visualizes the region with Matlab built-in function *plot3* instead of *mesh*.
+
 
 ---------------------------------------------------------------------
-script_main.m
-给定一个范围内轴的位姿数据， 绘制该范围内轴的最低点形成的约束域图形（吸引域）
-注：该版本使用时轴同一时刻只能绕X轴或Y轴（二者选其一）旋转，否则会因为精度问题造成计算不准确
+**script_main_rot.m**
 
----------------------------------------------------------------------
-script_main_AR1.m
-注：此版本将值为NaN的点重新赋值为0，其他与script_main无区别
+This file is identical to the basic version *script_main*. The difference is that you can specify both x and y tile angles with this version.
 
----------------------------------------------------------------------
-script_main_o.m
-注:此版本输出为底面中心点，不是最低点，其他与script_main无区别
----------------------------------------------------------------------
-script_main_plot.m
-给定一个范围内轴的位姿数据， 绘制该范围内轴的最低点形成的约束域图形（吸引域）
-此版本图形使用PLOT3函数绘制
-注：该版本使用时轴同一时刻只能绕X轴或Y轴（二者选其一）旋转，否则会因为精度问题造成计算不准确
 
----------------------------------------------------------------------
-script_main_rot.m
-给定一个范围内轴的位姿数据， 绘制该范围内轴的最低点形成的约束域图形（吸引域）
-注：该版本可同时绕X轴和Y轴旋转
+------
+
+**script_main_AR1.m**
+
+This file is identical to the basic version *script_main*. The difference is when lowest_point == NaN, the value will be set to 0.
+
+
+------
+
+**script_main_numeric.m**
+
+This file is identical to the basic version *script_main*. The difference is that the intersection points are calculated with numerical methods instead of solving quadratic equations.

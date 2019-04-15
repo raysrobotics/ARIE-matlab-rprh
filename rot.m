@@ -6,7 +6,7 @@ function T = rot(f, theta)
 %  - theta: rotation angle (radian)
 %
 % Author:
-%  Ray Lee(lirui2013@ia.ac.cn)
+%  Rui Li (raysworld@outlook.com)
 %
 % Date:
 %  2014-06-14 File created

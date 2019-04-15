@@ -17,7 +17,7 @@ function [flag, d_lowest, O_pe_H] = ARIE_findLowestPoint_R(param, options, displ
 %   O_pe_H:  coord of the center point of the lower surface of the peg 
 %
 %  Author:
-%   Ray Lee(lirui2013@ia.ac.cn)
+%   Rui Li (raysworld@outlook.com)
 %
 %  LOG:
 %   2014-04-11: Create the file.
@@ -32,93 +32,93 @@ function [flag, d_lowest, O_pe_H] = ARIE_findLowestPoint_R(param, options, displ
 %   2014-08-22: Improvements on edge-only detect
 %
 
-% ±ê¼ÇÎ»
+% ï¿½ï¿½ï¿½Î»
 flag = [];
-flag.outrange = 0;          % ×îµÍµãÊÇ·ñÔÚhole·¶Î§ÄÚ£¬ÊÇÔòÎª0£¬²»ÊÇÔòÎª1
-flag.inter = 0;             % Í¶Ó°Óëµ×Ô²½»µãÇé¿ö£¬ÖµÎªnÔòÓÐn¸ö½»µã
-flag.contact = 0;           % ÖáÓë¿×µÄ½Ó´¥µãÇé¿ö£¬ÖµÎªnÔòÓÐn¸ö½Ó´¥µã£¬-1Îª²àÀâ½Ó´¥
-% ´æ·Å×îµÍµãµÄz×ø±êÖµ
+flag.outrange = 0;          % ï¿½ï¿½Íµï¿½ï¿½Ç·ï¿½ï¿½ï¿½holeï¿½ï¿½Î§ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½Îª0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª1
+flag.inter = 0;             % Í¶Ó°ï¿½ï¿½ï¿½Ô²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÖµÎªnï¿½ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+flag.contact = 0;           % ï¿½ï¿½ï¿½ï¿½×µÄ½Ó´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÖµÎªnï¿½ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½Ó´ï¿½ï¿½ã£¬-1Îªï¿½ï¿½ï¿½ï¿½Ó´ï¿½
+% ï¿½ï¿½ï¿½ï¿½ï¿½Íµï¿½ï¿½zï¿½ï¿½ï¿½ï¿½Öµ
 d_lowest = NaN;
-% Æ½ÒÆÁ¿
-% xÓëyÎª±ä»¯Á¿£¬zÎªÖáÏà¶ÔÓÚ¿×ËùÔÚÆ½ÃæÌ§Æð¸ß¶È£¬ÉèÎªÒ»¸ö¶¨Öµ¼´¿É£¬±ÈÈç5
+% Æ½ï¿½ï¿½ï¿½ï¿½
+% xï¿½ï¿½yÎªï¿½ä»¯ï¿½ï¿½ï¿½ï¿½zÎªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½ï¿½Æ½ï¿½ï¿½Ì§ï¿½ï¿½ß¶È£ï¿½ï¿½ï¿½ÎªÒ»ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½É£ï¿½ï¿½ï¿½ï¿½ï¿½5
 O_x_pe_H = param(1);        % x
 O_y_pe_H = param(2);        % y
 O_z_pe_H = param(3);        % z
 
-%% ²ÎÊý
-% Öá¿×°ë¾¶
+%% ï¿½ï¿½ï¿½ï¿½
+% ï¿½ï¿½×°ë¾¶
 R_peg = options.R_peg;
 R_hol = options.R_hol;
-% Æ«ÐÄ¾à(ÑØX_peÖá·½Ïò)
+% Æ«ï¿½Ä¾ï¿½(ï¿½ï¿½X_peï¿½á·½ï¿½ï¿½)
 d_ecc = options.d_ecc;
-% Æ«ÐÄ¾à(ÑØZ_pe·½Ïò)
+% Æ«ï¿½Ä¾ï¿½(ï¿½ï¿½Z_peï¿½ï¿½ï¿½ï¿½)
 h_ecc = options.h_ecc;
 
-% peg-e×ø±êÖáÓëhole×ø±êÖáËù³É¼Ð½Ç
+% peg-eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½holeï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¼Ð½ï¿½
 theta_x_pe_H = options.theta_x;
 theta_y_pe_H = options.theta_y;
 theta_z_pe_H = options.theta_z;
 
-%% »ù×¼Ô²£¬ÓÃÓÚ¸÷ÖÖ±ä»»ºÍ»­Í¼
+%% ï¿½ï¿½×¼Ô²ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½Ö±ä»»ï¿½Í»ï¿½Í¼
 t = linspace(0, 2*pi, 360);
 rr_hol = R_hol;
 xx_hol = rr_hol * cos(t);
 yy_hol = rr_hol * sin(t);
 zz_hol = zeros(1,length(t));
-ww_hol = ones(1,length(t)); % Æë´Î×ø±ê
+ww_hol = ones(1,length(t)); % ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 rr_peg = R_peg;
 xx_peg = rr_peg * cos(t);
 yy_peg = rr_peg * sin(t);
 zz_peg = zeros(1,length(t));
-ww_peg = ones(1,length(t)); % Æë´Î×ø±ê
+ww_peg = ones(1,length(t)); % ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 %%
-% hole×ø±êÏµ(»ù×ø±êÏµ)------------------------------------------------------
+% holeï¿½ï¿½ï¿½ï¿½Ïµ(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµ)------------------------------------------------------
 frame_H = eye(4);
 if display == 2 || display == 3
-    % »­³öhole
+    % ï¿½ï¿½ï¿½ï¿½hole
     plot3(xx_hol, yy_hol, zz_hol, 'k'); hold on
-    % Öá×ø±ê±ê×¢
+    % ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¢
     xlabel('x'); ylabel('y'); zlabel('z');
 
     grid on; axis equal
     axis([-2*R_hol 2*R_hol -2*R_hol 2*R_hol -2 8]);
 end
 
-% peg-e×ø±êÏµ(Æ«ÐÄÖáÏÂ²¿¹Ì¶¨)-----------------------------------------------
-% peg-eÓëhole×ø±êÏµµÄ¹ØÏµ²ÎÊý[Xpe Ype Zpe theta_xe theta_ye theta_ze]
+% peg-eï¿½ï¿½ï¿½ï¿½Ïµ(Æ«ï¿½ï¿½ï¿½ï¿½ï¿½Â²ï¿½ï¿½Ì¶ï¿½)-----------------------------------------------
+% peg-eï¿½ï¿½holeï¿½ï¿½ï¿½ï¿½Ïµï¿½Ä¹ï¿½Ïµï¿½ï¿½ï¿½ï¿½[Xpe Ype Zpe theta_xe theta_ye theta_ze]
 axis_o_pe = [1 0 0]';
 axis_n_pe = [0 1 0]';
 axis_a_pe = [0 0 1]';
 O_pe = [0 0 0]';
 frame_pe = [axis_o_pe axis_n_pe axis_a_pe O_pe;0 0 0 1];
-% peg-e×ø±êÏµÔÚhole×ø±êÏµÏÂµÄ±íÊ¾(±ä»»)
+% peg-eï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½holeï¿½ï¿½ï¿½ï¿½Ïµï¿½ÂµÄ±ï¿½Ê¾(ï¿½ä»»)
 T_pe_H = trans([O_x_pe_H O_y_pe_H O_z_pe_H])*rot([0 1 0], theta_y_pe_H)*rot([1 0 0], theta_x_pe_H);
 frame_pe_H = T_pe_H * frame_pe;
-% peg-e×ø±êÏµµÄ×ø±êÖá¡¢Ô­µãÔÚhole×ø±êÏµÏÂµÄ±íÊ¾(±ä»»½á¹û)
+% peg-eï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¡¢Ô­ï¿½ï¿½ï¿½ï¿½holeï¿½ï¿½ï¿½ï¿½Ïµï¿½ÂµÄ±ï¿½Ê¾(ï¿½ä»»ï¿½ï¿½ï¿½)
 axis_o_pe_H = frame_pe_H(1:3,1);
 axis_n_pe_H = frame_pe_H(1:3,2);
 axis_a_pe_H = frame_pe_H(1:3,3);
 O_pe_H = frame_pe_H(1:3,4);
 
-%% »­peg-eÖáµ×ÃæÔ²
-% peg-eÖáµ×ÃæÔ²
+%% ï¿½ï¿½peg-eï¿½ï¿½ï¿½ï¿½ï¿½Ô²
+% peg-eï¿½ï¿½ï¿½ï¿½ï¿½Ô²
 points = T_pe_H * [xx_peg;yy_peg;zz_peg;ww_peg];
 if display == 2 || display == 3
     plot3(points(1,:),points(2,:),points(3,:),'b');
     hold on
-    % peg-eÖáµ×ÃæÔ²µÄÔ­µã
+    % peg-eï¿½ï¿½ï¿½ï¿½ï¿½Ô²ï¿½ï¿½Ô­ï¿½ï¿½
     plot3(O_pe_H(1),O_pe_H(2),O_pe_H(3),'r.');
-    % peg-eÖáµ×ÃæÔ²ÔÚXOY(hole)Æ½ÃæÉÏµÄÍ¶Ó°
+    % peg-eï¿½ï¿½ï¿½ï¿½ï¿½Ô²ï¿½ï¿½XOY(hole)Æ½ï¿½ï¿½ï¿½Ïµï¿½Í¶Ó°
     plot3(points(1,:),points(2,:),zz_peg,'b');
 end
-%% Çó×îµÍµã
+%% ï¿½ï¿½ï¿½ï¿½Íµï¿½
 % legacy code--------------------------------------------------------------
-% % ÇóÖáµÄµ×ÃæÔ²ÔÚZ_h·½ÏòÉÏµÄ×îµÍµã
+% % ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½ï¿½Ô²ï¿½ï¿½Z_hï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½Íµï¿½
 % [~, j]=find(points == min(min(points(3,:))));
 % if display == 2 || display == 3
-%     % »­ÖáµÄµ×ÃæÔ²ÔÚZ_h·½ÏòÉÏµÄ×îµÍµã
+%     % ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½ï¿½Ô²ï¿½ï¿½Z_hï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½Íµï¿½
 %     plot3([points(1,j) points(1,j)],...
 %         [points(2,j) points(2,j)],...
 %         [points(3,j) zeros(1,length(j))],...
@@ -127,18 +127,18 @@ end
 % lowest_point = [points(1,j(1)) points(2,j(1)) points(3,j(1))].';
 
 % 20140716-----------------------------------------------------------------
-axis_a_pe_H_proj = [axis_a_pe_H(1:2); 0]; % zÖáÔÚXoYÆ½ÃæµÄÍ¶Ó°
-costt = (axis_a_pe_H_proj' * axis_a_pe_H)/(norm(axis_a_pe_H_proj)*norm(axis_a_pe_H)); %zÖáÓëXoYÆ½ÃæµÄ¼Ð½Ç
+axis_a_pe_H_proj = [axis_a_pe_H(1:2); 0]; % zï¿½ï¿½ï¿½ï¿½XoYÆ½ï¿½ï¿½ï¿½Í¶Ó°
+costt = (axis_a_pe_H_proj' * axis_a_pe_H)/(norm(axis_a_pe_H_proj)*norm(axis_a_pe_H)); %zï¿½ï¿½ï¿½ï¿½XoYÆ½ï¿½ï¿½Ä¼Ð½ï¿½
 
-vector_R = [0 0 0]'; % ÓÉÖÐÐÄµãµ½×îµÍµãµÄÏòÁ¿
-vector_R(3) =  -R_peg * costt; % z×ø±êÓÉÈý½ÇÐÎÇó³ö
+vector_R = [0 0 0]'; % ï¿½ï¿½ï¿½ï¿½ï¿½Äµãµ½ï¿½ï¿½Íµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+vector_R(3) =  -R_peg * costt; % zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 a_R = axis_a_pe_H_proj / norm(axis_a_pe_H_proj) * R_peg * sqrt(1-costt^2);
-vector_R(1:2) = a_R(1:2); % x y×ø±êÓÉÍ¶Ó°ÏòÁ¿Çó³ö
+vector_R(1:2) = a_R(1:2); % x yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¶Ó°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 lowest_point = O_pe_H + vector_R;
 
 if display == 2 || display == 3
-    % »­ÖáµÄµ×ÃæÔ²ÔÚZ_h·½ÏòÉÏµÄ×îµÍµã
+    % ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½ï¿½Ô²ï¿½ï¿½Z_hï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½Íµï¿½
     plot3([lowest_point(1) lowest_point(1)],...
           [lowest_point(2) lowest_point(2)],...
           [lowest_point(3) 0], 'r');
@@ -148,7 +148,7 @@ if display == 2 || display == 3
           [lowest_point(3) 0], 'ro');
 end
 
-%% ÅÅ³ý×îµÍµãÍ¶Ó°²»ÔÚholeÄÚµÄÇé¿ö
+%% ï¿½Å³ï¿½ï¿½ï¿½Íµï¿½Í¶Ó°ï¿½ï¿½ï¿½ï¿½holeï¿½Úµï¿½ï¿½ï¿½ï¿½
 if norm(lowest_point(1:2)) > R_hol
 	if (display == 1 || display == 3), disp('lowest point OUT of range!'), end
     d_lowest = NaN;
@@ -158,7 +158,7 @@ if norm(lowest_point(1:2)) > R_hol
     return;
 end
 
-%% Çó½»µã
+%% ï¿½ó½»µï¿½
 % legacy code--------------------------------------------------------------
 % syms x y
 % Px = sin(theta_x_pe_H)*tan(theta_x_pe_H) + cos(theta_x_pe_H);
@@ -189,13 +189,13 @@ A1 = 1; B1 = 1; C1 = 0; D1 = 0; E1 = 0; F1 = -R_hol^2;
 % E2 = Q*O_x_pe_H - (Q^2 + Px^2)*O_y_pe_H;
 % F2 = Py^2*O_x_pe_H^2 + Px^2*O_y_pe_H^2 + Q^2*O_y_pe_H^2 - 2*Q*O_x_pe_H*O_y_pe_H - R^2;
 
-% Ö±½ÓÊ¹ÓÃ·½³ÌÇó½â´æÔÚÎó²î£¬»»Îª´ÓÍÖÔ²ÉÏÈ¡µã£¬È»ºóÇóÏµÊýµÄ·½·¨
+% Ö±ï¿½ï¿½Ê¹ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î£¬ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½Ô²ï¿½ï¿½È¡ï¿½ã£¬È»ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½Ä·ï¿½ï¿½ï¿½
 sel_points = [1 61 121 181 241];
 coe_xx = points(1,sel_points)';
 coe_yy = points(2,sel_points)';
 
 coe_C = [coe_xx.^2, coe_yy.^2, 2*coe_xx.*coe_yy, 2*coe_xx, 2*coe_yy];
-sol_C = coe_C\ones(size(coe_xx)); % Í¨¹ýÍÖÔ²ÉÏµÄÎå¸öµãÇóA¡¢B¡¢C¡¢D¡¢EÎå¸öÏµÊý£¬F=1
+sol_C = coe_C\ones(size(coe_xx)); % Í¨ï¿½ï¿½ï¿½ï¿½Ô²ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½Bï¿½ï¿½Cï¿½ï¿½Dï¿½ï¿½Eï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½F=1
 
 A2 = sol_C(1);
 B2 = sol_C(2);
@@ -218,20 +218,20 @@ else
 end
 
 
-%% ÅÐ¶Ï½»µãÇé¿ö
-% Í¶Ó°Ô²ºÍholeµÄ½»µãÓÐ0¸ö¡¢1¸ö¡¢2¸ö¡¢3¸ö¡¢4¸ö5ÖÖÇé¿ö£¬¶ÔÓ¦µÄ
-% ½Ó´¥µãÓÐÒÔÏÂ¼¸ÖÖÇé¿ö£º
-% 	1. ÎÞ½Ó´¥µã                        (0¸ö½»µã)
-% 	2. ÓÐÒ»¸ö½Ó´¥µã                    
-% 	2.1  ÖáµÄµ×ÃæÔ²Óë¿×ÏàÇÐ             (1¸ö½»µã/3¸ö½»µã)
-% 	2.2  ÖáµÄµ×ÃæÔ²Óë¿×²»ÏàÇÐ           (2¸ö½»µã)
-%   2.3  ÖáµÄ²àÀâÓë¿×ÓÐÒ»¸ö½Ó´¥µã       (2¸ö½»µã)
-% 	3. ÓÐÁ½¸ö½Ó´¥µã                    (2¸ö½»µã/4¸ö½»µã)
-% 	4. ÓÐÈý¸ö½Ó´¥µã                    (2¸ö½»µã/4¸ö½»µã)
+%% ï¿½Ð¶Ï½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+% Í¶Ó°Ô²ï¿½ï¿½holeï¿½Ä½ï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½2ï¿½ï¿½ï¿½ï¿½3ï¿½ï¿½ï¿½ï¿½4ï¿½ï¿½5ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½
+% ï¿½Ó´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+% 	1. ï¿½Þ½Ó´ï¿½ï¿½ï¿½                        (0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
+% 	2. ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ó´ï¿½ï¿½ï¿½                    
+% 	2.1  ï¿½ï¿½Äµï¿½ï¿½ï¿½Ô²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½             (1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
+% 	2.2  ï¿½ï¿½Äµï¿½ï¿½ï¿½Ô²ï¿½ï¿½×²ï¿½ï¿½ï¿½ï¿½ï¿½           (2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
+%   2.3  ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ó´ï¿½ï¿½ï¿½       (2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
+% 	3. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó´ï¿½ï¿½ï¿½                    (2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/4ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
+% 	4. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó´ï¿½ï¿½ï¿½                    (2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/4ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
 
 solution_count = length(x);
-% ÏÈ½«ËÄ¸ö½»µãµÄÇé¿ö´¦ÀíÎªÁ½¸ö½»µã
-if solution_count == 4 % ±È½ÏËÄ¸öµãµÄ¸ß¶È£¬ÁôÏÂ¸ß¶ÈµÍµÄÁ½¸ö
+% ï¿½È½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+if solution_count == 4 % ï¿½È½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½Ä¸ß¶È£ï¿½ï¿½ï¿½ï¿½Â¸ß¶ÈµÍµï¿½ï¿½ï¿½ï¿½ï¿½
     if (display == 1 || display == 3), disp('FOUR intersection points!'), end
     flag.inter = 4;
     z = ((y - O_y_pe_H)*sin(theta_x_pe_H) - (x - O_x_pe_H)*cos(theta_x_pe_H)*sin(theta_y_pe_H))/(cos(theta_x_pe_H)*cos(theta_y_pe_H))+O_z_pe_H;
@@ -241,7 +241,7 @@ if solution_count == 4 % ±È½ÏËÄ¸öµãµÄ¸ß¶È£¬ÁôÏÂ¸ß¶ÈµÍµÄÁ½¸ö
     x = x(idx(1:2));
     y = y(idx(1:2));
 end
-if solution_count == 2 % ±È½ÏÁ½¸öµãÊÇ·ñÊÇÍ¬Ò»¸öµã(2014-07-18)
+if solution_count == 2 % ï¿½È½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Í¬Ò»ï¿½ï¿½ï¿½ï¿½(2014-07-18)
     z = ((y - O_y_pe_H)*sin(theta_x_pe_H) - (x - O_x_pe_H)*cos(theta_x_pe_H)*sin(theta_y_pe_H))/(cos(theta_x_pe_H)*cos(theta_y_pe_H))+O_z_pe_H;
     if norm([x(1)-x(2) y(1)-y(2) z(1)-z(2)]) < 10^-6
         x = x(1);
@@ -251,7 +251,7 @@ if solution_count == 2 % ±È½ÏÁ½¸öµãÊÇ·ñÊÇÍ¬Ò»¸öµã(2014-07-18)
 end
 
 solution_count = length(x);
-% 0¸ö½»µã
+% 0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 if solution_count == 0
     if (display == 1 || display == 3), disp('NO intersection points!'), end
     flag.inter = 0;
@@ -285,27 +285,27 @@ elseif solution_count == 2
         flag.inter = 2;
     end
     
-    % ¼ÆËã½»µãÎ»ÖÃµ½holeÆ½ÃæµÄ¾àÀë
+    % ï¿½ï¿½ï¿½ã½»ï¿½ï¿½Î»ï¿½Ãµï¿½holeÆ½ï¿½ï¿½Ä¾ï¿½ï¿½ï¿½
     z = ((y - O_y_pe_H)*sin(theta_x_pe_H) - (x - O_x_pe_H)*cos(theta_x_pe_H)*sin(theta_y_pe_H))/(cos(theta_x_pe_H)*cos(theta_y_pe_H))+O_z_pe_H;
     if display == 2 || display == 3
         plot3([x(1) x(1)],[y(1) y(1)],[0 z(1)], 'g-');
         plot3([x(2) x(2)],[y(2) y(2)],[0 z(2)], 'g-');
     end
     
-    % ±£´æ½»µã×ø±êµ½ÐÂµÄ±äÁ¿ÖÐ
+    % ï¿½ï¿½ï¿½æ½»ï¿½ï¿½ï¿½ï¿½ï¿½êµ½ï¿½ÂµÄ±ï¿½ï¿½ï¿½ï¿½ï¿½
     inter_x = x;
     inter_y = y;
     inter_z = z;
     
-    % Á½½Ó´¥µã»òÈý½Ó´¥µã
-    if norm(z(1)-z(2)) < 10^-4 % Á½µã¸ß¶ÈÏà²î²»´ó£¬ËµÃ÷¿ÉÄÜ´æÔÚµÚÈý¸ö½Ó´¥µã£¬ÐèÒª½øÒ»²½ÅÐ¶Ï
+    % ï¿½ï¿½ï¿½Ó´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó´ï¿½ï¿½ï¿½
+    if norm(z(1)-z(2)) < 10^-4 % ï¿½ï¿½ï¿½ï¿½ß¶ï¿½ï¿½ï¿½î²»ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½Ü´ï¿½ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó´ï¿½ï¿½ã£¬ï¿½ï¿½Òªï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ð¶ï¿½
         h_down = z(1);
-        % ÒÔÏÂÅÐ¶ÏÊÇ·ñ´æÔÚµÚÈý¸ö½Ó´¥µã
-        % ÏÈÇóÒ»¸ö´¹Ö±ÓÚXoYÆ½ÃæµÄÆ½Ãæ,¸ÃÆ½Ãæ¹ýOpeµãºÍ×îµÍµã
-        % Æ½Ãæ·½³ÌÎªAx+By=1£¬¼´
+        % ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó´ï¿½ï¿½ï¿½
+        % ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½XoYÆ½ï¿½ï¿½ï¿½Æ½ï¿½ï¿½,ï¿½ï¿½Æ½ï¿½ï¿½ï¿½Opeï¿½ï¿½ï¿½ï¿½ï¿½Íµï¿½
+        % Æ½ï¿½æ·½ï¿½ï¿½ÎªAx+By=1ï¿½ï¿½ï¿½ï¿½
         % coe_planar(1)*x + coe_planar(2)*y - coe_planar(3)*1 = 0
-        % °ÑÁ½¸öµã - O_pe_HºÍlowest_point´øÈë£¬¼´¿É½âµÃAÓëB
-        if abs(O_pe_H(1)-lowest_point(1))<10^-6%0.02  % Æ½Ãæ½Ó½üÓëXÖá»òyÖáÖØºÏÊ±£¬·½³Ì²¡Ì¬£¬²»ÄÜÇóÄæ£¬¹ÊÖ±½Ó¼ÆËã
+        % ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ - O_pe_Hï¿½ï¿½lowest_pointï¿½ï¿½ï¿½ë£¬ï¿½ï¿½ï¿½É½ï¿½ï¿½Aï¿½ï¿½B
+        if abs(O_pe_H(1)-lowest_point(1))<10^-6%0.02  % Æ½ï¿½ï¿½Ó½ï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½yï¿½ï¿½ï¿½Øºï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Ì²ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ£¬ï¿½ï¿½Ö±ï¿½Ó¼ï¿½ï¿½ï¿½
             coe_planar = [1,0,O_pe_H(1)];
         elseif abs(O_pe_H(2)-lowest_point(2))<10^-6%0.02
             coe_planar = [0,1,O_pe_H(2)];
@@ -343,7 +343,7 @@ elseif solution_count == 2
 %         plot3(x(1), y(1), h_down, 'go');
 %         plot3(x(2), y(2), h_down, 'go');
         
-        % ÅÐ¶ÏÄÄ¸ö½âÊÇÀâÉÏµÄµã(Ope¡¢×îµÍµã¡¢ÀâÉÏµãÈýµãÁ¬Ïß³ÉÖ±½Ç)
+        % ï¿½Ð¶ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÄµï¿½(Opeï¿½ï¿½ï¿½ï¿½Íµã¡¢ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß³ï¿½Ö±ï¿½ï¿½)
         v1 = O_pe_H - lowest_point;
         v2 = [x(1);y(1);h_down] - lowest_point;
         if abs(v1.' * v2) < 10^-6
@@ -355,25 +355,25 @@ elseif solution_count == 2
             plot3(edge_point(1), edge_point(2), edge_point(3), 'go');
         end
         
-        % ÅÐ¶ÏÀâÉÏÒ»µãµÄÍ¶Ó°ÓëholeµÄÎ»ÖÃ¹ØÏµ
-        if abs(edge_point(1)^2 + edge_point(2)^2 - R^2) <= 10^-4 % ÂäÔÚholeÉÏ£¬Èýµã½Ó´¥
+        % ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Í¶Ó°ï¿½ï¿½holeï¿½ï¿½Î»ï¿½Ã¹ï¿½Ïµ
+        if abs(edge_point(1)^2 + edge_point(2)^2 - R^2) <= 10^-4 % ï¿½ï¿½ï¿½ï¿½holeï¿½Ï£ï¿½ï¿½ï¿½ï¿½ï¿½Ó´ï¿½
             if (display == 1 || display == 3), disp('three-point contact!'), end
             flag.contact = 3;
             d_lowest = lowest_point(3) - h_down;
-        elseif edge_point(1)^2 + edge_point(2)^2 - R^2 < 0 % ÂäÔÚholeÄÚ£¬Á½µã½Ó´¥
+        elseif edge_point(1)^2 + edge_point(2)^2 - R^2 < 0 % ï¿½ï¿½ï¿½ï¿½holeï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½Ó´ï¿½
             if (display == 1 || display == 3), disp('two-point contact!'), end
             flag.contact = 2;
             d_lowest = lowest_point(3) - h_down;
-        elseif edge_point(1)^2 + edge_point(2)^2 - R^2 > 0 % ÂäÔÚholeÍâ£¬²àÀâµã½Ó´¥
+        elseif edge_point(1)^2 + edge_point(2)^2 - R^2 > 0 % ï¿½ï¿½ï¿½ï¿½holeï¿½â£¬ï¿½ï¿½ï¿½ï¿½ï¿½Ó´ï¿½
             if (display == 1 || display == 3), disp('edge-only contact!'), end
             flag.contact = -1;
             d1 = norm(lowest_point(1:2) - edge_point(1:2));
             mid_point = [sum(inter_x)/2  sum(inter_y)/2  sum(inter_z)/2].';
             
             d2_cos = ([0;0] - mid_point(1:2))' * (edge_point(1:2) - mid_point(1:2));
-            if d2_cos >= 0 % mid_pointÔÚO_holeºÍedge_point_projµÄÍ¬²à
+            if d2_cos >= 0 % mid_pointï¿½ï¿½O_holeï¿½ï¿½edge_point_projï¿½ï¿½Í¬ï¿½ï¿½
                 d2 = norm(mid_point(1:2) - edge_point(1:2)) - norm(mid_point(1:2)) - R;
-            else % mid_pointÔÚO_holeºÍedge_point_projµÄÖÐ¼ä
+            else % mid_pointï¿½ï¿½O_holeï¿½ï¿½edge_point_projï¿½ï¿½ï¿½Ð¼ï¿½
                 d2 = norm(mid_point(1:2) - edge_point(1:2)) + norm(mid_point(1:2)) - R;
             end
             
@@ -382,19 +382,19 @@ elseif solution_count == 2
             
             d_lowest = lowest_point(3) - (h_down - d4);
         end
-    else % Á½µã¸ß¶ÈÏà²î½Ï´ó£¬ËµÃ÷Ö»ÓÐÒ»¸ö½Ó´¥µã£¬´Ë´¦ÔÙÅÐ¶ÏÒ»ÏÂÊÇ²»ÊÇ²àÀâ½Ó´¥(2014-08-22)        
-        % È¡³öpegµ×ÃæÔ²ÉÏµÄµã
+    else % ï¿½ï¿½ï¿½ï¿½ß¶ï¿½ï¿½ï¿½ï¿½Ï´ï¿½Ëµï¿½ï¿½Ö»ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ó´ï¿½ï¿½ã£¬ï¿½Ë´ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½Ò»ï¿½ï¿½ï¿½Ç²ï¿½ï¿½Ç²ï¿½ï¿½ï¿½Ó´ï¿½(2014-08-22)        
+        % È¡ï¿½ï¿½pegï¿½ï¿½ï¿½ï¿½Ô²ï¿½ÏµÄµï¿½
         px = points(1,:);
         py = points(2,:);
         pz = points(3,:);
         
-        % pegµÄzÖáÓëhole×ø±êÏµËù³ÉµÄ·½ÏòÓàÏÒ
+        % pegï¿½ï¿½zï¿½ï¿½ï¿½ï¿½holeï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ÉµÄ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         ca = axis_o_pe' * axis_a_pe_H / norm(axis_a_pe_H);
         cb = axis_n_pe' * axis_a_pe_H / norm(axis_a_pe_H);
         cc = axis_a_pe' * axis_a_pe_H / norm(axis_a_pe_H);
         cs = ca^2 + cb^2;
         
-        % ÍÆµ¼³öµÄdelta£¬ÓÃÓÚÇó½âÁ½Ô²ÖùÇúÃæ½»ÏßÉÏµÄµã
+        % ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½deltaï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô²ï¿½ï¿½ï¿½ï¿½ï¿½æ½»ï¿½ï¿½ï¿½ÏµÄµï¿½
         cdelta = (px*ca + py*cb).^2 - cs*(px.^2 + py.^2 - R^2);
 
         idx = cdelta>=0;
@@ -404,15 +404,15 @@ elseif solution_count == 2
         pz = pz(idx);
         cdelta = cdelta(idx);
         
-        % t1Îª½»ÏßÇúÏßµÄÆäÖÐÒ»Ö§
+        % t1Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ßµï¿½ï¿½ï¿½ï¿½ï¿½Ò»Ö§
         t1 = (-(px*ca+py*cb) + sqrt(cdelta)) / cs;
         
-        % [ppx, ppy, ppz]¼´Á½Ô²ÖùÃæ½»ÏßÉÏµÄµã
+        % [ppx, ppy, ppz]ï¿½ï¿½ï¿½ï¿½Ô²ï¿½ï¿½ï¿½æ½»ï¿½ï¿½ï¿½ÏµÄµï¿½
         ppx = px + t1 * ca;
         ppy = py + t1 * cb;
         ppz = pz + t1 * cc;
 
-        if abs(O_pe_H(1)-lowest_point(1))<10^-6%0.02  % Æ½Ãæ½Ó½üÓëXÖá»òyÖáÖØºÏÊ±£¬·½³Ì²¡Ì¬£¬²»ÄÜÇóÄæ£¬¹ÊÖ±½Ó¼ÆËã
+        if abs(O_pe_H(1)-lowest_point(1))<10^-6%0.02  % Æ½ï¿½ï¿½Ó½ï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½yï¿½ï¿½ï¿½Øºï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Ì²ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ£¬ï¿½ï¿½Ö±ï¿½Ó¼ï¿½ï¿½ï¿½
             coe_planar = [1,0,O_pe_H(1)];
         elseif abs(O_pe_H(2)-lowest_point(2))<10^-6%0.02
             coe_planar = [0,1,O_pe_H(2)];
@@ -422,14 +422,14 @@ elseif solution_count == 2
         end
         
         cd = abs(coe_planar(1)*ppx + coe_planar(2)*ppy - coe_planar(3)*1) < 10^-4;
-        [~, idx] = min(ppz(cd));  % [ppx(idx), ppy(idx), ppz(idx)]¼´¿ÉÄÜµÄ²àÀâ½Ó´¥µã
+        [~, idx] = min(ppz(cd));  % [ppx(idx), ppy(idx), ppz(idx)]ï¿½ï¿½ï¿½ï¿½ï¿½ÜµÄ²ï¿½ï¿½ï¿½Ó´ï¿½ï¿½ï¿½
 
-        if isempty(idx) || (min(z) < ppz(idx)) % Ò»µã½Ó´¥            
+        if isempty(idx) || (min(z) < ppz(idx)) % Ò»ï¿½ï¿½Ó´ï¿½            
             if (display == 1 || display == 3), disp('one-point contact!'), end
             flag.contact = 1;
 
             h_down = min(z);
-        else % ²àÀâµã½Ó´¥
+        else % ï¿½ï¿½ï¿½ï¿½ï¿½Ó´ï¿½
             if (display == 1 || display == 3), disp('edge-only contact!'), end
             flag.contact = -1;
             

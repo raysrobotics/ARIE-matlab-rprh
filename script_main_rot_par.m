@@ -19,7 +19,7 @@
 %  - [x,y]: used to set simulation ranges
 %
 % Author:
-%  Ray Lee(lirui2013@ia.ac.cn)
+%  Rui Li (raysworld@outlook.com)
 %
 % Date:
 %  2014-06-01 File created
