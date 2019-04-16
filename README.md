@@ -61,12 +61,10 @@ This file is identical to the basic version *script_main*. The difference is tha
 
 This file is identical to the basic version *script_main*. The difference is that this version visualizes the region with Matlab built-in function *plot3* instead of *mesh*.
 
-
 ---------------------------------------------------------------------
 **script_main_rot.m**
 
 This file is identical to the basic version *script_main*. The difference is that you can specify both x and y tile angles with this version.
-
 
 ------
 
@@ -74,9 +72,28 @@ This file is identical to the basic version *script_main*. The difference is tha
 
 This file is identical to the basic version *script_main*. The difference is when lowest_point == NaN, the value will be set to 0.
 
-
 ------
 
 **script_main_numeric.m**
 
 This file is identical to the basic version *script_main*. The difference is that the intersection points are calculated with numerical methods instead of solving quadratic equations.
+
+
+
+## [Cite]
+
+If you use this toolbox in your research please cite it:
+
+```
+@article{rui2017,
+   author = {Li, Rui and Qiao, Hong},
+   title = {Condition and Strategy Analysis for Assembly Based on Attractive Region in Environment},
+   journal = {IEEE/ASME Transactions on Mechatronics},
+   volume = {22},
+   number = {5},
+   pages = {2218-2228},
+   ISSN = {1083-4435},
+   DOI = {10.1109/TMECH.2017.2705180},
+   year = {2017}
+}
+```
