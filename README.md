@@ -1,5 +1,10 @@
 # Attractive Region in Environment for round-peg round-hole insertion
 
+<p>
+    <a href="https://github.com/raysrobotics/ARIE-matlab-rprh/blob/master/LICENSE"><img alt="Software License" src="https://img.shields.io/badge/license-CASIA-blue.svg"></a>
+    <a><img alt="MATLAB Version" src="https://img.shields.io/badge/matlab-v2018-yellow.svg"></a>
+</p>
+
 These MATLAB scripts are used to visualize 3D attractive region in environment for round-peg-round-hole assembly tasks.
 
 Author: Rui Li (raysworld@outlook.com)
